@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Let's Study ✨!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #ffe6f2, #e6f0ff);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 400px;
+      position: relative;
+      display: none; /* Hide planner initially */
+    }
+
+    #start-page {
+      width:400px; margin:auto; background:white; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:40px; text-align:center;
+    }
+
+    #start-page h1 {
+      color:#ff4da6;
+    }
+
+    #start-btn {
+      background-color:#ff4da6; color:white; font-size:18px; padding:12px 28px; border:none; border-radius:10px; cursor:pointer;
+    }
+    #start-btn:hover {
+      background-color:#ff3385;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff4da6;
+    }
+
+    h2 {
+      color: #5a5a5a;
+      margin-top: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #ff4da6;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #ff3385;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9f9f9;
+      padding: 6px;
+      margin: 4px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    li.done span {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    li span {
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    #notes-area {
+      height: 100px;
+    }
+
+    #timer-display {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 18px;
+      background: #eee;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(to right, #ff4da6, #ffb3e6);
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.4s;
+      width: 0%;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      line-height: 18px;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    /* Theme: Dark mode styles */
+    body.dark {
+      background: linear-gradient(to right, #232526, #414345);
+      color: #eee;
+    }
+
+    body.dark .container {
+      background: #212121;
+      color: #eee;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    body.dark h1 {
+      color: #ffb3e6;
+    }
+
+    body.dark h2 {
+      color: #e6e6e6;
+    }
+
+    body.dark input, 
+    body.dark textarea {
+      background: #333;
+      color: #eee;
+      border: 1px solid #555;
+    }
+
+    body.dark button {
+      background-color: #3d3d3d;
+      color: #ff4da6;
+    }
+
+    body.dark button:hover {
+      background-color: #232526;
+    }
+
+    body.dark .progress-bar {
+      background: #555;
+    }
+
+    body.dark .progress-bar-fill {
+      background: linear-gradient(to right, #ff4da6, #ffb3e6);
+      color: #222;
+    }
+
+    body.dark #start-page {
+      background: #212121;
+      color: #eee;
+    }
+    body.dark #start-page h1 {
+      color: #ffb3e6;
+    }
+    body.dark #start-btn {
+      background-color: #3d3d3d;
+      color: #ff4da6;
+    }
+    body.dark #start-btn:hover {
+      background-color: #232526;
+    }
+  </style>
+</head>
+<body>
+  <!-- Start Page -->
+  <div id="start-page">
+    <h1>Welcome to Let's Study ✨!</h1>
+    <p style="margin:20px 0;">Your personal study hub for goals, tasks, notes, music, and more.</p>
+    <p style="color:#888;">Today's Motivation:</p>
+    <div id="quote-box" style="margin-bottom:20px; font-style:italic; color:#ff4da6;"></div>
+    <button id="start-btn">Start Studying</button>
+  </div>
+
+  <!-- Study Planner -->
+  <div class="container">
+    <h1>Let's Study ✨!</h1>
+    <button id="theme-btn" style="float:right; margin-bottom:10px;">🌙 Dark Mode</button>
+
+    <section class="planner">
+      <h2>🎯 Daily Goals</h2>
+      <div id="goals-progress" class="progress-bar"></div>
+      <ul id="goals-list"></ul>
+      <input type="text" id="goal-input" placeholder="Add new goal..." />
+      <button onclick="addGoal()">Add</button>
+    </section>
+
+    <section class="todo">
+      <h2>✅ To-Do List</h2>
+      <div id="todo-progress" class="progress-bar"></div>
+      <ul id="todo-list"></ul>
+      <input type="text" id="todo-input" placeholder="Add new task..." />
+      <button onclick="addTask()">Add</button>
+    </section>
+
+    <section class="notes">
+      <h2>📝 Notes</h2>
+      <textarea id="notes-area" placeholder="Write your notes here..."></textarea>
+      <button onclick="exportNotes()">Export Notes</button>
+    </section>
+
+    <section class="music">
+      <h2>🎵 Study Music</h2>
+      <audio id="music-player" controls style="width:100%;"></audio>
+      <input type="file" id="music-upload" accept="audio/*" />
+      <button onclick="clearMusic()">Remove Music</button>
+    </section>
+
+    <section class="timer">
+      <h2>⏰ Study Timer</h2>
+      <p id="timer-display">25:00</p>
+      <label>
+        Study (minutes):
+        <input type="number" id="study-minutes" value="25" min="1" style="width:60px;">
+      </label>
+      <label>
+        Break (minutes):
+        <input type="number" id="break-minutes" value="5" min="1" style="width:60px;">
+      </label>
+      <br>
+      <button onclick="startTimer('study')">Start Study</button>
+      <button onclick="startTimer('break')">Start Break</button>
+      <button onclick="resetTimer()">Reset</button>
+    </section>
+  </div>
+
+  <script>
+    // --- Motivational Quotes ---
+    const quotes = [
+      "Success is the sum of small efforts, repeated day in and day out. – Robert Collier",
+      "The journey of a thousand miles begins with a single step. – Lao Tzu",
+      "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
+      "Believe you can and you’re halfway there. – Theodore Roosevelt",
+      "Great things never come from comfort zones.",
+      "Push yourself, because no one else is going to do it for you.",
+      "Dream it. Wish it. Do it.",
+      "Little by little, one travels far. – J.R.R. Tolkien",
+      "The expert in anything was once a beginner."
+    ];
+    function showDailyQuote() {
+      const today = new Date().toISOString().slice(0,10);
+      let stored = localStorage.getItem("quoteOfTheDay");
+      let storedDate = localStorage.getItem("quoteDate");
+      let quote;
+      if (stored && storedDate === today) {
+        quote = stored;
+      } else {
+        quote = quotes[Math.floor(Math.random() * quotes.length)];
+        localStorage.setItem("quoteOfTheDay", quote);
+        localStorage.setItem("quoteDate", today);
+      }
+      document.getElementById("quote-box").textContent = quote;
+    }
+
+    // --- LocalStorage Utility ---
+    function saveList(id) {
+      const items = [];
+      document.querySelectorAll(`#${id} li`).forEach(li => {
+        items.push({ text: li.querySelector('span').textContent, done: li.classList.contains("done") });
+      });
+      localStorage.setItem(id, JSON.stringify(items));
+      updateProgressBar("goals-list", "goals-progress");
+      updateProgressBar("todo-list", "todo-progress");
+    }
+
+    function loadList(id) {
+      const data = localStorage.getItem(id);
+      if (!data) return;
+      const list = document.getElementById(id);
+      list.innerHTML = "";
+      JSON.parse(data).forEach(item => {
+        let li = createListItem(item.text, id, item.done);
+        list.appendChild(li);
+      });
+      updateProgressBar("goals-list", "goals-progress");
+      updateProgressBar("todo-list", "todo-progress");
+    }
+
+    function saveNotes() {
+      localStorage.setItem("notes", document.getElementById("notes-area").value);
+    }
+    function loadNotes() {
+      document.getElementById("notes-area").value = localStorage.getItem("notes") || "";
+    }
+
+    // --- Progress Bar ---
+    function updateProgressBar(listId, barId) {
+      const list = document.getElementById(listId);
+      const items = Array.from(list.querySelectorAll('li'));
+      const total = items.length;
+      const done = items.filter(li => li.classList.contains('done')).length;
+      const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+
+      let bar = document.getElementById(barId);
+      bar.innerHTML = "";
+      let fill = document.createElement("div");
+      fill.className = "progress-bar-fill";
+      fill.style.width = percent + "%";
+      fill.textContent = percent + "%";
+      bar.appendChild(fill);
+    }
+
+    // --- List Item Creation (with Edit/Delete) ---
+    function createListItem(text, id, done = false) {
+      let li = document.createElement("li");
+      // Text
+      let span = document.createElement("span");
+      span.textContent = text;
+      li.appendChild(span);
+
+      // Edit button
+      let editBtn = document.createElement("button");
+      editBtn.textContent = "✏️";
+      editBtn.style.marginLeft = "5px";
+      editBtn.onclick = function(e) {
+        e.stopPropagation();
+        let newText = prompt("Edit item:", span.textContent);
+        if (newText !== null && newText.trim() !== "") {
+          span.textContent = newText;
+          saveList(id);
+        }
+      };
+      li.appendChild(editBtn);
+
+      // Delete button
+      let delBtn = document.createElement("button");
+      delBtn.textContent = "🗑️";
+      delBtn.style.marginLeft = "5px";
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        li.remove();
+        saveList(id);
+      };
+      li.appendChild(delBtn);
+
+      // Done toggle
+      li.onclick = function(e) {
+        if (e.target === editBtn || e.target === delBtn) return;
+        li.classList.toggle("done");
+        saveList(id);
+      };
+      if (done) li.classList.add("done");
+      return li;
+    }
+
+    function addTask() {
+      let input = document.getElementById("todo-input");
+      let list = document.getElementById("todo-list");
+      if (input.value.trim() !== "") {
+        let li = createListItem(input.value, "todo-list");
+        list.appendChild(li);
+        input.value = "";
+        saveList("todo-list");
+      }
+    }
+
+    function addGoal() {
+      let input = document.getElementById("goal-input");
+      let list = document.getElementById("goals-list");
+      if (input.value.trim() !== "") {
+        let li = createListItem(input.value, "goals-list");
+        list.appendChild(li);
+        input.value = "";
+        saveList("goals-list");
+      }
+    }
+
+    // --- Timer (Custom Durations & Notifications) ---
+    let timeLeft = 25 * 60;
+    let timer;
+    let currentTimerType = 'study';
+
+    function updateTimerDisplay() {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      document.getElementById("timer-display").textContent =
+        `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    function sendTimerNotification(message) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(message);
+      } else {
+        alert(message);
+      }
+    }
+
+    function startTimer(type) {
+      let minutes = type === 'study'
+        ? parseInt(document.getElementById("study-minutes").value)
+        : parseInt(document.getElementById("break-minutes").value);
+
+      timeLeft = minutes * 60;
+      currentTimerType = type;
+      updateTimerDisplay();
+
+      clearInterval(timer);
+      timer = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timer);
+          timer = null;
+          if (type === 'study') {
+            sendTimerNotification("Study session complete! Start your break ☕");
+          } else {
+            sendTimerNotification("Break time over! Get back to studying ✨");
+          }
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = null;
+      let minutes =
+        currentTimerType === 'study'
+          ? parseInt(document.getElementById("study-minutes").value)
+          : parseInt(document.getElementById("break-minutes").value);
+      timeLeft = minutes * 60;
+      updateTimerDisplay();
+    }
+
+    // --- Theme Switcher ---
+    function setTheme(dark) {
+      document.body.classList.toggle("dark", dark);
+      document.getElementById("theme-btn").textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    }
+
+    document.getElementById("theme-btn").onclick = function() {
+      const isDark = !document.body.classList.contains("dark");
+      setTheme(isDark);
+    };
+
+    // --- Export Notes ---
+    function exportNotes() {
+      const notes = document.getElementById("notes-area").value;
+      const blob = new Blob([notes], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "study-notes.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Notifications Permission ---
+    function requestNotificationPermission() {
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+    }
+
+    // --- Music Player ---
+    document.getElementById('music-upload').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        const player = document.getElementById('music-player');
+        player.src = url;
+        player.play();
+        localStorage.setItem('musicFileName', file.name);
+        localStorage.setItem('musicFileUrl', url); // For this session
+      }
+    });
+
+    // Restore last music (session only)
+    document.addEventListener("DOMContentLoaded", function() {
+      const url = localStorage.getItem('musicFileUrl');
+      if (url) {
+        const player = document.getElementById('music-player');
+        player.src = url;
+      }
+    });
+
+    function clearMusic() {
+      const player = document.getElementById('music-player');
+      player.src = "";
+      document.getElementById('music-upload').value = "";
+      localStorage.removeItem('musicFileName');
+      localStorage.removeItem('musicFileUrl');
+    }
+
+    // --- Start Page Logic ---
+    document.getElementById("start-btn").onclick = function() {
+      document.getElementById("start-page").style.display = "none";
+      document.querySelector(".container").style.display = "block";
+    };
+
+    // --- Page Load ---
+    document.addEventListener("DOMContentLoaded", function() {
+      showDailyQuote();
+      loadList("goals-list");
+      loadList("todo-list");
+      loadNotes();
+      document.getElementById("notes-area").addEventListener("input", saveNotes);
+      setTheme(localStorage.getItem("theme") === "dark");
+      updateTimerDisplay();
+      requestNotificationPermission();
+      updateProgressBar("goals-list", "goals-progress");
+      updateProgressBar("todo-list", "todo-progress");
+    });
+
+  </script>
+</body>
+    </html>
